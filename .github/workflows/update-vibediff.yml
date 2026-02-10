@@ -1,0 +1,47 @@
+name: Update Vibediff Formula
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-vibediff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest release
+        id: release
+        run: |
+          RELEASE=$(curl -s https://api.github.com/repos/malvex/vibediff/releases/latest)
+          VERSION=$(echo "$RELEASE" | jq -r '.tag_name')
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "VERSION_NUM=${VERSION#v}" >> $GITHUB_OUTPUT
+
+      - name: Get checksums
+        run: |
+          VERSION=${{ steps.release.outputs.VERSION }}
+          BASE_URL="https://github.com/malvex/vibediff/releases/download/${VERSION}"
+
+          curl -sL "${BASE_URL}/checksums.txt" -o checksums.txt
+
+          echo "SHA_DARWIN_ARM64=$(grep vibediff-darwin-arm64 checksums.txt | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "SHA_DARWIN_AMD64=$(grep vibediff-darwin-amd64 checksums.txt | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "SHA_LINUX_ARM64=$(grep vibediff-linux-arm64 checksums.txt | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "SHA_LINUX_AMD64=$(grep vibediff-linux-amd64 checksums.txt | cut -d' ' -f1)" >> $GITHUB_ENV
+
+      - name: Update formula from template
+        run: |
+          export VERSION_NUM=${{ steps.release.outputs.VERSION_NUM }}
+          export BASE_URL="https://github.com/malvex/vibediff/releases/download/${{ steps.release.outputs.VERSION }}"
+          envsubst < templates/vibediff.rb.template > Formula/vibediff.rb
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/vibediff.rb
+          git commit -m "Release vibediff ${{ steps.release.outputs.VERSION }}"
+          git push
