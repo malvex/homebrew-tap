@@ -2,8 +2,9 @@ name: Update Vibediff Formula
 
 on:
   workflow_dispatch:
-  branch:
-    - feat/ci
+  push:
+    branches:
+      - feat/ci
 
 jobs:
   update:
