@@ -1,21 +1,21 @@
 class Vibediff < Formula
   desc "Local Git diff viewer with real-time updates and code review features"
   homepage "https://github.com/malvex/vibediff"
-  version "1.1.0"
+  version "1.2.0"
   license "MIT"
 
   if OS.mac? && Hardware::CPU.arm?
-    url "https://github.com/malvex/vibediff/releases/download/v1.1.0/vibediff-darwin-arm64"
-    sha256 "bcc005ab9ba4cb7dc635832f64a2ab32d304dc20ee1ce3c7f7818e359405a80a"
+    url "https://github.com/malvex/vibediff/releases/download/v1.2.0/vibediff-darwin-arm64"
+    sha256 "4d3ac2ff8f6bf9b6cdbf940f499f8d942bb519bbb2d83f919bd5c45272a800bb"
   elsif OS.mac? && Hardware::CPU.intel?
-    url "https://github.com/malvex/vibediff/releases/download/v1.1.0/vibediff-darwin-amd64"
-    sha256 "4e81e993723a8e79c336766d8cff30f3e88529af12f3a815afb6ff4c4da443d1"
+    url "https://github.com/malvex/vibediff/releases/download/v1.2.0/vibediff-darwin-amd64"
+    sha256 "110678b89bf0142b398875b3359c0ac9fb762e68377a58618e8582d088e455c1"
   elsif OS.linux? && Hardware::CPU.arm?
-    url "https://github.com/malvex/vibediff/releases/download/v1.1.0/vibediff-linux-arm64"
-    sha256 "e1f83ed9a9211a0c3c1f7d5c7445de687eaf0e7c6f670b09e88cc2e2b2d3bc16"
+    url "https://github.com/malvex/vibediff/releases/download/v1.2.0/vibediff-linux-arm64"
+    sha256 "4116a0e5b7fb8c4e5523a81c48c4e71cfaa759de1d8bb4cb3ea2968f580c5708"
   elsif OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/malvex/vibediff/releases/download/v1.1.0/vibediff-linux-amd64"
-    sha256 "fbc4a09a008c7cc83a0df3892c2a881f38af7b0ba5d5d0e674fd68f35a9c26f4"
+    url "https://github.com/malvex/vibediff/releases/download/v1.2.0/vibediff-linux-amd64"
+    sha256 "7c48c82bb4a09b455eb1c044ba3b85bb4677ff62377a914b896d5f14b6ce4275"
   end
 
   def install
