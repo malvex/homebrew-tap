@@ -6,8 +6,11 @@ on:
     branches:
       - feat/ci
 
+permissions:
+  contents: write
+
 jobs:
-  update:
+  update-vibediff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
