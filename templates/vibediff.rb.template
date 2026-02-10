@@ -1,0 +1,50 @@
+class Vibediff < Formula
+  desc "Local Git diff viewer with real-time updates and code review features"
+  homepage "https://github.com/malvex/vibediff"
+  version "${VERSION_NUM}"
+  license "MIT"
+
+  if OS.mac? && Hardware::CPU.arm?
+    url "${BASE_URL}/vibediff-darwin-arm64"
+    sha256 "${SHA_DARWIN_ARM64}"
+  elsif OS.mac? && Hardware::CPU.intel?
+    url "${BASE_URL}/vibediff-darwin-amd64"
+    sha256 "${SHA_DARWIN_AMD64}"
+  elsif OS.linux? && Hardware::CPU.arm?
+    url "${BASE_URL}/vibediff-linux-arm64"
+    sha256 "${SHA_LINUX_ARM64}"
+  elsif OS.linux? && Hardware::CPU.intel?
+    url "${BASE_URL}/vibediff-linux-amd64"
+    sha256 "${SHA_LINUX_AMD64}"
+  end
+
+  def install
+    bin.install Dir["vibediff-*"].first => "vibediff"
+  end
+
+  test do
+    # Test version output
+    assert_match version.to_s, shell_output("#{bin}/vibediff -version")
+
+    # Test that the binary starts
+    port = free_port
+
+    # Start the server in the background
+    pid = fork do
+      exec bin/"vibediff", "-port", port.to_s
+    end
+
+    # Wait for server to start
+    sleep 3
+
+    begin
+      # Check that the server is responding
+      response = shell_output("curl -s -o /dev/null -w '%{http_code}' http://localhost:#{port}")
+      assert_equal "200", response.strip
+    ensure
+      # Clean up
+      Process.kill("TERM", pid)
+      Process.wait(pid)
+    end
+  end
+end
